@@ -77,3 +77,14 @@ canvas {
 ::-webkit-scrollbar-thumb:hover {
   background: #ff0000; /* Ignites to pure red when hovered */
 }
+
+@layer utilities {
+  @keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+  
+  .animate-scan {
+    animation: scan 2s ease-in-out infinite;
+  }
+}

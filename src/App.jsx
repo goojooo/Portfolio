@@ -6,6 +6,7 @@ import Hero from './views/Hero';
 import About from './views/About';
 import Projects from './views/Projects';
 import Contact from './views/Contact';
+import Skills from './views/Skills';
 
 export default function App() {
   const [activeProject, setActiveProject] = useState(null);
@@ -19,6 +20,7 @@ export default function App() {
       <div className="relative z-10">
         <Hero />
         <About />
+        <Skills />
         <Projects setActiveProject={setActiveProject} />
         <Contact />
       </div>
