@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #050505;
+    color: #e0e0e0;
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.1em;
+  }
+}
+
+/* Hide scrollbar for clean visual aesthetic but maintain functionality */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a1a2e;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8a0303;
+}
+
+
+/* Hide the default cursor everywhere */
+* {
+  cursor: none !important;
+}
+
+/* Ensure the custom cursor doesn't trigger scrollbars when it touches the edge */
+body {
+  overflow-x: hidden;
+}
+
+/* Ensure users can scroll past the 3D canvases on mobile devices */
+canvas {
+  touch-action: pan-y !important;
+}
+
+/* =========================================
+   CUSTOM CYBER SCROLLBAR
+   ========================================= */
+
+/* Firefox support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #8A0303 #020202;
+}
+
+/* WebKit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px; /* Sleek, narrow profile */
+}
+
+::-webkit-scrollbar-track {
+  background: #020202; /* Matches your deepest background color */
+  border-left: 1px solid rgba(255, 255, 255, 0.05); /* Subtle separation line */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8A0303; /* Your signature crimson */
+  border-radius: 10px;
+  /* Simulating a neon glow using inset shadow */
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff0000; /* Ignites to pure red when hovered */
+}
