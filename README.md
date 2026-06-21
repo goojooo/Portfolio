@@ -1,4 +1,4 @@
-# 🦂 Nayan | 3D WebGL Developer Portfolio
+# 🦂 Nayan | Developer Portfolio
 
 A premium, high-performance developer portfolio engineered with React, Three.js, and GSAP. Designed with a dark, cybernetic "Scorpio" aesthetic, featuring fluid WebGL backgrounds, interactive 3D elements, and glassmorphic UI components.
 
