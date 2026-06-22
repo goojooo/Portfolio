@@ -7,6 +7,7 @@ import About from './views/About';
 import Projects from './views/Projects';
 import Contact from './views/Contact';
 import Skills from './views/Skills';
+import Footer from './components/Footer';
 
 export default function App() {
   const [activeProject, setActiveProject] = useState(null);
@@ -23,6 +24,7 @@ export default function App() {
         <Skills />
         <Projects setActiveProject={setActiveProject} />
         <Contact />
+        <Footer />
       </div>
     </main>
   );
