@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import ProjectModal from '../components/ProjectModal'; // <-- Ensure this file exists from the previous step!
+import ProjectModal from '../components/ProjectModal';
+import { useTheme } from '../context/ThemeContext';
 
 const PROJECT_DATA = [
   {
@@ -8,9 +9,9 @@ const PROJECT_DATA = [
     shortDesc: "A smart local service platform with role-based access, partner approval, booking workflows, payments, and admin dashboard.",
     longDesc: "Fixora bridges the gap between local service providers and consumers. Built with a robust Java Spring Boot backend and a high-performance React frontend, it handles complex role-based authentication, secure payment gateways, and dynamic booking workflows in real-time.",
     tech: ["Spring Boot", "React", "MySQL", "Tailwind CSS"],
-    liveLink: "#", // Update with your actual URL
-    githubLink: "#", // Update with your actual repo
-    video: "" // e.g., "/fixora-demo.mp4"
+    liveLink: "#",
+    githubLink: "#",
+    video: ""
   },
   {
     title: "AI Email Writer",
@@ -22,16 +23,6 @@ const PROJECT_DATA = [
     githubLink: "https://github.com/goojooo/EmailWriter.git",
     video: "/email-writer.mp4"
   },
-//   {
-//     title: "AI Resume Analyzer",
-//     category: "React & Node.js",
-//     shortDesc: "An AI-powered application that analyzes resumes, provides feedback, and helps users optimize their profiles for ATS systems.",
-//     longDesc: "Engineered to help professionals bypass strict Applicant Tracking Systems. The application parses PDF data, cross-references it with job descriptions using AI, and outputs actionable, real-time UI feedback to increase hiring conversion rates.",
-//     tech: ["React", "Node.js", "Express", "AI APIs"],
-//     liveLink: "#",
-//     githubLink: "#",
-//     video: ""
-//   },
   {
     title: "Inventory Management System",
     category: "Java Servlet & JDBC",
@@ -45,38 +36,57 @@ const PROJECT_DATA = [
 ];
 
 export default function Projects({ setActiveProject }) {
-  // State to control the Modal
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+
   const [expandedProject, setExpandedProject] = useState(null);
 
   return (
     <>
-      <section className="w-full min-h-screen py-24 px-8 md:px-24 z-10 relative pointer-events-none">
+      <section className={`w-full min-h-screen py-24 px-8 md:px-24 z-10 relative pointer-events-none transition-colors duration-500 ${isLight ? 'bg-[#F8FAFC]' : 'bg-transparent'}`}>
+        
+        {/* Heading */}
         <div className="mb-16 pointer-events-auto">
-          <p className="text-[#8A0303] text-sm tracking-[0.3em] uppercase mb-2">Selected Works</p>
-          <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tight text-[#E0E0E0]">Transformative Artifacts</h2>
+          <p className={`text-sm tracking-[0.3em] uppercase mb-2 transition-colors duration-500 ${isLight ? 'text-[#0055FF]' : 'text-[#8A0303]'}`}>
+            Selected Works
+          </p>
+          <h2 className={`text-4xl md:text-5xl font-bold uppercase tracking-tight transition-colors duration-500 ${isLight ? 'text-[#1A1A2E]' : 'text-[#E0E0E0]'}`}>
+            Transformative Artifacts
+          </h2>
         </div>
 
-        <div className="flex flex-col border-t border-zinc-800 pointer-events-auto">
+        {/* Project list */}
+        <div className={`flex flex-col border-t pointer-events-auto transition-colors duration-500 ${isLight ? 'border-zinc-200' : 'border-zinc-800'}`}>
           {PROJECT_DATA.map((project, idx) => (
             <div
               key={idx}
-              className="group relative border-b border-zinc-800 py-10 flex flex-col md:flex-row md:items-center justify-between cursor-pointer transition-colors duration-300 hover:bg-zinc-950/40 px-4"
+              className={`group relative border-b py-10 flex flex-col md:flex-row md:items-center justify-between cursor-pointer transition-colors duration-300 px-4 ${
+                isLight
+                  ? 'border-zinc-200 hover:bg-zinc-100/60'
+                  : 'border-zinc-800 hover:bg-zinc-950/40'
+              }`}
               onMouseEnter={() => setActiveProject(idx)}
               onMouseLeave={() => setActiveProject(null)}
-              onClick={() => setExpandedProject(project)} // <-- Triggers the Modal!
+              onClick={() => setExpandedProject(project)}
             >
               <div className="max-w-md">
-                <span className="text-xs text-zinc-500 font-mono block mb-1">0{idx + 1} / {project.category}</span>
-                <h3 className="text-3xl font-bold text-[#E0E0E0] group-hover:text-[#8A0303] transition-colors duration-300 uppercase">
+                <span className={`text-xs font-mono block mb-1 transition-colors duration-500 ${isLight ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                  0{idx + 1} / {project.category}
+                </span>
+                <h3 className={`text-3xl font-bold uppercase transition-colors duration-300 ${
+                  isLight
+                    ? 'text-[#1A1A2E] group-hover:text-[#0055FF]'
+                    : 'text-[#E0E0E0] group-hover:text-[#8A0303]'
+                }`}>
                   {project.title}
                 </h3>
               </div>
+
               <div className="mt-4 md:mt-0 flex flex-col items-start md:items-end">
-                <p className="text-zinc-400 max-w-sm text-sm font-sans leading-relaxed text-left md:text-right">
+                <p className={`max-w-sm text-sm font-sans leading-relaxed text-left md:text-right transition-colors duration-500 ${isLight ? 'text-zinc-500' : 'text-zinc-400'}`}>
                   {project.shortDesc}
                 </p>
-                {/* Visual cue that the row is clickable */}
-                <span className="mt-3 text-xs text-[#8A0303] tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span className={`mt-3 text-xs tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isLight ? 'text-[#0055FF]' : 'text-[#8A0303]'}`}>
                   Initialize Modal ↗
                 </span>
               </div>
@@ -85,11 +95,10 @@ export default function Projects({ setActiveProject }) {
         </div>
       </section>
 
-      {/* The Glassmorphic Modal Overlay */}
-      <ProjectModal 
-        project={expandedProject} 
-        onClose={() => setExpandedProject(null)} 
+      <ProjectModal
+        project={expandedProject}
+        onClose={() => setExpandedProject(null)}
       />
     </>
   );
-}       
+}

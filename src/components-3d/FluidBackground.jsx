@@ -1,8 +1,7 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-// --- GLSL SHADERS ---
 const vertexShader = `
   varying vec2 vUv;
   void main() {
@@ -13,22 +12,26 @@ const vertexShader = `
 
 const fragmentShader = `
   uniform float uTime;
+  uniform float uTheme;        // 0.0 = dark, 1.0 = light (lerps smoothly)
+  uniform vec3 uColorA_dark;   // dark mode: void color
+  uniform vec3 uColorB_dark;   // dark mode: crimson color
+  uniform vec3 uColorA_light;  // light mode: bright base
+  uniform vec3 uColorB_light;  // light mode: blue accent
   varying vec2 vUv;
 
-  // Classic Perlin 2D Noise 
   vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
   vec2 fade(vec2 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
   
   float cnoise(vec2 P){
     vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);
     vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);
-    Pi = mod(Pi, 289.0); // To avoid truncation effects in permutation
+    Pi = mod(Pi, 289.0);
     vec4 ix = Pi.xzxz;
     vec4 iy = Pi.yyww;
     vec4 fx = Pf.xzxz;
     vec4 fy = Pf.yyww;
     vec4 i = permute(permute(ix) + iy);
-    vec4 gx = 2.0 * fract(i * 0.0243902439) - 1.0; // 1/41 = 0.024...
+    vec4 gx = 2.0 * fract(i * 0.0243902439) - 1.0;
     vec4 gy = abs(gx) - 0.5;
     vec4 tx = floor(gx + 0.5);
     gx = gx - tx;
@@ -52,37 +55,51 @@ const fragmentShader = `
   }
 
   void main() {
-    // Generate fluid distortion based on time and UV coordinates
+    // ✅ Identical noise calculation — nothing changed here
     float noise = cnoise(vUv * 3.0 + uTime * 0.15);
     noise += cnoise(vUv * 6.0 - uTime * 0.1) * 0.5;
+
+    // Blend between dark and light palette using uTheme
+    vec3 colorA = mix(uColorA_dark, uColorA_light, uTheme);
+    vec3 colorB = mix(uColorB_dark, uColorB_light, uTheme);
     
-    // The Scorpio Palette: Abyssal Black to Deep Crimson
-    vec3 color1 = vec3(0.02, 0.02, 0.03); // Deep dark void
-    vec3 color2 = vec3(0.15, 0.0, 0.0);   // Subtle blood red depth
-    
-    vec3 finalColor = mix(color1, color2, noise + 0.5);
+    vec3 finalColor = mix(colorA, colorB, noise + 0.5);
     
     gl_FragColor = vec4(finalColor, 1.0);
   }
 `;
 
-export default function FluidBackground() {
+export default function FluidBackground({ theme }) {
   const materialRef = useRef();
 
   const uniforms = useMemo(() => ({
-    uTime: { value: 0 },
+    uTime:        { value: 0 },
+    uTheme:       { value: 0.0 },                          // 0 = dark
+    uColorA_dark: { value: new THREE.Color(0.02, 0.02, 0.03) }, // your original color1
+    uColorB_dark: { value: new THREE.Color(0.15, 0.0,  0.0)  }, // your original color2
+    uColorA_light:{ value: new THREE.Color(0.97, 0.98, 0.99) }, // #F8FAFC light base
+    uColorB_light:{ value: new THREE.Color(0.0,  0.33, 1.0)  }, // #0055FF blue accent
   }), []);
 
+  // ✅ Smoothly animate uTheme toward 0 (dark) or 1 (light) in useFrame
+  const targetTheme = useRef(0);
+  useEffect(() => {
+    targetTheme.current = theme === 'light' ? 1.0 : 0.0;
+  }, [theme]);
+
   useFrame((state) => {
-    if (materialRef.current) {
-      materialRef.current.uniforms.uTime.value = state.clock.elapsedTime;
-    }
+    if (!materialRef.current) return;
+    // Lerp uTheme — gives a smooth ~0.5s transition
+    materialRef.current.uniforms.uTime.value = state.clock.elapsedTime;
+    materialRef.current.uniforms.uTheme.value = THREE.MathUtils.lerp(
+      materialRef.current.uniforms.uTheme.value,
+      targetTheme.current,
+      0.05
+    );
   });
 
   return (
-    // Pushed far back (-5 on Z axis) so it sits behind the particles
     <mesh position={[0, 0, -5]}>
-      {/* A massive plane to cover the screen entirely */}
       <planeGeometry args={[30, 30, 32, 32]} />
       <shaderMaterial
         ref={materialRef}
