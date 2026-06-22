@@ -12,13 +12,13 @@ export default function Navbar() {
       </div>
       
       <div className="flex items-center gap-6">
-        <a href="https://github.com/yourusername" target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-[#8A0303] transition-colors">
+        <a href="https://github.com/goojooo" target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-[#8A0303] transition-colors">
           <FaGithub size={22} />
         </a>
-        <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-[#8A0303] transition-colors">
+        <a href="https://linkedin.com/in/nayan-dahare-108468280" target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-[#8A0303] transition-colors">
           <FaLinkedin size={22} />
         </a>
-        <a href="mailto:youremail@example.com" className="text-zinc-400 hover:text-[#8A0303] transition-colors">
+        <a href="mailto:nayandahare02@gmail.com" className="text-zinc-400 hover:text-[#8A0303] transition-colors">
           <Mail size={22} />
         </a>
 
